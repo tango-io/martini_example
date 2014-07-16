@@ -5,6 +5,17 @@ import (
   "github.com/martini-contrib/render"
 )
 
+type Person struct {
+  Name      string
+  Age       int
+  Emails    []string
+  Jobs      []*Job
+}
+
+type Job struct {
+  Employer string
+  Role     string
+}
 
 func main() {
   m := martini.Classic()
@@ -18,7 +29,14 @@ func main() {
   }))
 
   m.Get("/", func(r render.Render) {
-    r.HTML(200, "index", "Antonio")
+
+    person := Person{
+      Name:   "Antonio Chavez",
+      Age:    24,
+      Emails: []string{ "cavjzz@gmail.com", "antonio.chavez@tangosource.com", "antonio@queuetechnologies.com" },
+      Jobs:   []*Job{ &Job{ "TangoSource LLC", "Technical Leader" }, &Job{ "Queue Technologies Inc.", "Lead Engineer" } },
+    }
+    r.HTML(200, "index", person)
   })
 
   m.Run()

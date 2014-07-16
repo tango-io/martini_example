@@ -1,1 +1,27 @@
-<h1>Hello {{.}}!</h1>
+<h1>Employee profile:</h1>
+
+<div> <h3>Name: {{ .Name }}</h3> </div>
+
+<div> <p>Age: {{ .Age }}</p> </div>
+
+<div>
+  <p>Emails:</p>
+  <ul>
+    {{ range .Emails }}
+      <li> {{ . }} </li>
+    {{ end }}
+  </ol>
+</div>
+
+<div>
+  <ul>
+    {{ with .Jobs }}
+      {{ range . }}
+        <li>
+          <strong>Employer:</strong> {{ .Employer }}
+          <strong>Role:</strong> {{ .Role }}
+        </li>
+      {{ end }}
+    {{ end }}
+  </ol>
+</div>
