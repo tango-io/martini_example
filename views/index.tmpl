@@ -1,27 +1,25 @@
 <h1>Employee profile:</h1>
+<table>
+  <thead>
+    <tr>
+      <th>Id</th>
+      <th>Name</th>
+      <th>Age</th>
+      <th>Email</th>
+      <th>Job</th>
+     </tr>
+   </thead>
+  <tbody>
+   {{ range . }}
+     <tr>
+       <td>{{.Id}}</td>
+       <td>{{.Name}}</td>
+       <td>{{.Age}}</td>
+       <td>{{.Email}}</td>
+       <td>{{.Job}}</td>
+     </tr>
+   {{end}}
+  </tbody>
+</table>
 
-<div> <h3>Name: {{ .Name }}</h3> </div>
-
-<div> <p>Age: {{ .Age }}</p> </div>
-
-<div>
-  <p>Emails:</p>
-  <ul>
-    {{ range .Emails }}
-      <li> {{ . }} </li>
-    {{ end }}
-  </ol>
-</div>
-
-<div>
-  <ul>
-    {{ with .Jobs }}
-      {{ range . }}
-        <li>
-          <strong>Employer:</strong> {{ .Employer }}
-          <strong>Role:</strong> {{ .Role }}
-        </li>
-      {{ end }}
-    {{ end }}
-  </ol>
-</div>
+<a href="/persons/new">Create new person</a>
