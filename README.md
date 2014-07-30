@@ -3,6 +3,35 @@
 This application is a simple CRUD application written in [Golang](http://golang.org/)
 using [Martini](http://martini.codegangsta.io/) and [PostgreSQL](http://www.postgresql.org/).
 
+## Instalation
+
+You can download Go from the [source](http://golang.org/doc/install)
+or if you prefer you can use this [go version manager](https://github.com/moovweb/gvm)
+
+Using gvm
+
+``` bash
+gvm install go1
+```
+
+The gopath will be automatically setup for your project (including vim files).
+Next you need to install the packages:
+
+``` bash
+go get github.com/go-martini/martini
+go get github.com/martini-contrib/render
+go get github.com/lib/pq
+go get github.com/codegangsta/gin
+```
+
+And run the server:
+
+``` bash
+go run server.go
+# or
+gin # This one has live reload feature
+```
+
 
 ## Setting up martini for the project
 
@@ -150,4 +179,8 @@ To more information about the Go templating engine please refer to [the document
 
 ## Reading data from a postgresql database
 
+Comming soon
+
 ## Inserting data to a postgresql database
+
+Comming soon
