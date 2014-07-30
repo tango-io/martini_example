@@ -6,7 +6,7 @@ import (
   "github.com/martini-contrib/render"
   "database/sql"
   _ "github.com/lib/pq"
-	"net/http"
+  "net/http"
 )
 
 type Person struct {
@@ -31,7 +31,7 @@ func PanicIf(err error) {
 
 func index (r render.Render, req *http.Request, db *sql.DB) {
   rows, err := db.Query("SELECT * FROM persons")
-	PanicIf(err)
+  PanicIf(err)
   defer rows.Close()
   persons := []Person{}
 
@@ -51,13 +51,13 @@ func newPerson(r render.Render) {
 
 func createPerson(r render.Render, req *http.Request, db *sql.DB){
   _, err := db.Query("INSERT INTO persons (id, name, age, email, job) VALUES (DEFAULT, $1, $2, $3, $4)", req.FormValue("person[name]"), req.FormValue("person[age]"), req.FormValue("person[email]"), req.FormValue("person[job]"))
-	PanicIf(err)
+  PanicIf(err)
   r.Redirect("/")
 }
 
 func editPerson(r render.Render, params martini.Params, db *sql.DB) {
   rows, err := db.Query("SELECT * FROM persons WHERE id = $1", params["id"])
-	PanicIf(err)
+  PanicIf(err)
   defer rows.Close()
   person := Person{}
 
@@ -71,7 +71,7 @@ func editPerson(r render.Render, params martini.Params, db *sql.DB) {
 
 func updatePerson(r render.Render, req *http.Request, params martini.Params, db *sql.DB){
   _, err := db.Query("UPDATE persons SET name = $1, age = $2, email = $3, job = $4 WHERE id = $5", req.FormValue("person[name]"), req.FormValue("person[age]"), req.FormValue("person[email]"), req.FormValue("person[job]"), params["id"])
-	PanicIf(err)
+  PanicIf(err)
   r.Redirect("/")
 }
 
@@ -83,7 +83,7 @@ func deletePerson(r render.Render, req *http.Request, params martini.Params, db 
 
 func showPerson(r render.Render, params martini.Params, db *sql.DB) {
   rows, err := db.Query("SELECT * FROM persons WHERE id = $1", params["id"])
-	PanicIf(err)
+  PanicIf(err)
   defer rows.Close()
   person := Person{}
 
