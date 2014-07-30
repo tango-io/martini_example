@@ -57,6 +57,97 @@ works for the verbs "Put", "Post", "Delete".
 
 ## Rendering views
 
+In order to render views, you need to import the package to render first:
+
+``` go
+import (
+  // ...
+    "github.com/martini-contrib/render"
+  // ...
+)
+```
+By default martini's render look for your templates/, but you can change
+the configuration as your convinience
+
+``` go
+func main() {
+  m := martini.Classic()
+  m.Use(render.Renderer(render.Options {
+    Directory: "views",
+    Layout: "layouts/layout",
+    Charset: "UTF-8",
+    IndentJSON: true,
+    IndentXML: true,
+  }))
+  // ...
+}
+```
+As you notice we need to use the martini instance as well.
+
+To specify the template you want to display for your route, do the following:
+
+``` go
+func main() {
+  // ...
+  m.Get("/", func(r render.Render) {
+    r.HTML(200, "index", nil)
+  })
+  // ...
+}
+```
+
+Now you can render you view on the root path of your application.
+
+If you notice we are are sending three parameters to the `m.HTML(...)`
+method, and the order is the following: `m.HTML(statusCode, templateName, object)`.
+
+In order to pass an object to show in the view you need to do the following:
+
+``` go
+import (
+  // ...
+)
+
+type Person struct {
+  Id      int
+  Name    string
+  Age     int
+  Email   string
+  Job     string
+}
+
+func main() {
+  // ...
+}
+```
+The struct will be the object we're going to send to the route view.
+
+``` go
+func main() {
+  // ...
+  m.Get("/", func(r render.Render) {
+    person := Person{ 1, "John Doe", 33, "email@example.com", "Cashier" }
+    r.HTML(200, "index", person)
+  })
+  // ...
+}
+```
+
+And you can access it in the view like this:
+
+``` mustache
+<h1>Displaying {{ .Name }}</h1>
+
+<div>
+  <p>Id: {{ .Id}}</p>
+  <p>Age: {{ .Age}}</p>
+  <p>Email: {{ .Email}}</p>
+  <p>Job: {{ .Job}}</p>
+</div>
+```
+
+To more information about the Go templating engine please refer to [the documentation](http://golang.org/pkg/text/template/).
+
 ## Reading data from a postgresql database
 
 ## Inserting data to a postgresql database
