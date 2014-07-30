@@ -75,6 +75,12 @@ func updatePerson(r render.Render, req *http.Request, params martini.Params, db 
   r.Redirect("/")
 }
 
+func deletePerson(r render.Render, req *http.Request, params martini.Params, db *sql.DB) {
+  _, err := db.Query("DELETE FROM persons WHERE id = $1", params["id"])
+  PanicIf(err)
+  r.Redirect("/")
+}
+
 func main() {
   m := martini.Classic()
   m.Map(SetupDB())
@@ -89,6 +95,7 @@ func main() {
   m.Get("/persons/new", newPerson)
   m.Get("/persons/:id/edit", editPerson)
   m.Post("/persons/:id", updatePerson)
+  m.Get("/persons/:id/delete", deletePerson)
   m.Post("/persons", createPerson)
   m.Get("/", index)
   m.Run()
