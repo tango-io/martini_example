@@ -1,0 +1,25 @@
+<a href="/">Return to index</a>
+
+<form action="/persons/{{ .Id }}" method="POST">
+  <div>
+    <label for="person[name]">Name: </label>
+    <input type="text" name="person[name]" value="{{ .Name}}" required/>
+  </div>
+
+  <div>
+    <label for="person[age]">Age: </label>
+    <input type="number" name="person[age]" value="{{ .Age }}" required/>
+  </div>
+
+  <div>
+    <label for="person[email]">Email: </label>
+    <input type="email" name="person[email]" value="{{ .Email }}" required/>
+  </div>
+
+  <div>
+    <label for="person[job]">Job: </label>
+    <input type="text" name="person[job]" value="{{.Job}}" required/>
+  </div>
+
+  <div><input type="submit" value="Save me"></div>
+</form>

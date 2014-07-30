@@ -7,6 +7,7 @@
       <th>Age</th>
       <th>Email</th>
       <th>Job</th>
+      <th>Actions</th>
      </tr>
    </thead>
   <tbody>
@@ -17,6 +18,7 @@
        <td>{{.Age}}</td>
        <td>{{.Email}}</td>
        <td>{{.Job}}</td>
+       <td><a href="/persons/{{ .Id }}/edit">Edit</a></td>
      </tr>
    {{end}}
   </tbody>
