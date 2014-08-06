@@ -7,18 +7,29 @@ import (
   "database/sql"
   _ "github.com/lib/pq"
   "net/http"
+  "github.com/jinzhu/gorm"
+  "time"
 )
 
 type Person struct {
-  Id      int
-  Name    string
-  Age     int
-  Email   string
-  Job     string
+  Id        int64
+  Name      string
+  Age       int
+  Email     string
+  Job       string
+  CreatedAt time.Time
+  UpdatedAt time.Time
+  DeletedAt time.Time
 }
 
 func SetupDB() *sql.DB {
   db, err := sql.Open("postgres", "dbname=martini_example sslmode=disable")
+  PanicIf(err)
+  return db
+}
+
+func SetupGORM() *sql.DB {
+  db, err := gorm.Open("postgres", "dbname=martini_example sslmode=disable")
   PanicIf(err)
   return db
 }
