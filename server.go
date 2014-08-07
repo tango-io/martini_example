@@ -1,18 +1,20 @@
 package main
 
 import (
-	"database/sql"
 	_ "fmt"
 	"net/http"
 
+	"strconv"
+
 	"github.com/go-martini/martini"
+	"github.com/jinzhu/gorm"
 	_ "github.com/lib/pq"
 	"github.com/martini-contrib/render"
 	"github.com/tangosource/martini_example/models"
 )
 
-func SetupDB() *sql.DB {
-	db, err := sql.Open("postgres", "dbname=martini_example sslmode=disable")
+func SetupDB() gorm.DB {
+	db, err := gorm.Open("postgres", "dbname=martini_example sslmode=disable")
 	PanicIf(err)
 	return db
 }
@@ -23,18 +25,9 @@ func PanicIf(err error) {
 	}
 }
 
-func index(r render.Render, req *http.Request, db *sql.DB) {
-	rows, err := db.Query("SELECT * FROM persons")
-	PanicIf(err)
-	defer rows.Close()
+func index(r render.Render, req *http.Request, db gorm.DB) {
 	persons := []person.Person{}
-
-	for rows.Next() {
-		p := person.Person{}
-		err := rows.Scan(&p.Id, &p.Name, &p.Age, &p.Job, &p.Email)
-		PanicIf(err)
-		persons = append(persons, p)
-	}
+	db.Find(&persons)
 
 	r.HTML(200, "index", persons)
 }
@@ -43,50 +36,40 @@ func newPerson(r render.Render) {
 	r.HTML(200, "persons/new", nil)
 }
 
-func createPerson(r render.Render, req *http.Request, db *sql.DB) {
-	_, err := db.Query("INSERT INTO persons (id, name, age, email, job) VALUES (DEFAULT, $1, $2, $3, $4)", req.FormValue("person[name]"), req.FormValue("person[age]"), req.FormValue("person[email]"), req.FormValue("person[job]"))
-	PanicIf(err)
+func createPerson(r render.Render, req *http.Request, db gorm.DB) {
+	p := person.Person{}
+	db.Create(&p)
 	r.Redirect("/")
 }
 
-func editPerson(r render.Render, params martini.Params, db *sql.DB) {
-	rows, err := db.Query("SELECT * FROM persons WHERE id = $1", params["id"])
-	PanicIf(err)
-	defer rows.Close()
-	person := person.Person{}
-
-	for rows.Next() {
-		err := rows.Scan(&person.Id, &person.Name, &person.Age, &person.Job, &person.Email)
-		PanicIf(err)
-	}
-
-	r.HTML(200, "persons/edit", person)
+func editPerson(r render.Render, params martini.Params, db gorm.DB) {
+	p := person.Person{}
+	db.First(&p, params["id"])
+	r.HTML(200, "persons/edit", p)
 }
 
-func updatePerson(r render.Render, req *http.Request, params martini.Params, db *sql.DB) {
-	_, err := db.Query("UPDATE persons SET name = $1, age = $2, email = $3, job = $4 WHERE id = $5", req.FormValue("person[name]"), req.FormValue("person[age]"), req.FormValue("person[email]"), req.FormValue("person[job]"), params["id"])
-	PanicIf(err)
+func updatePerson(r render.Render, req *http.Request, params martini.Params, db gorm.DB) {
+	p := person.Person{}
+	db.First(&p, params["id"])
+	p.Name = req.FormValue("person[name]")
+	p.Age, _ = strconv.Atoi(req.FormValue("person[age]"))
+	p.Email = req.FormValue("person[email]")
+	p.Job = req.FormValue("person[job]")
+	db.Save(&p)
 	r.Redirect("/")
 }
 
-func deletePerson(r render.Render, req *http.Request, params martini.Params, db *sql.DB) {
-	_, err := db.Query("DELETE FROM persons WHERE id = $1", params["id"])
-	PanicIf(err)
+func deletePerson(r render.Render, req *http.Request, params martini.Params, db gorm.DB) {
+	p := person.Person{}
+	db.First(&p, params["id"])
+	db.Delete(&p)
 	r.Redirect("/")
 }
 
-func showPerson(r render.Render, params martini.Params, db *sql.DB) {
-	rows, err := db.Query("SELECT * FROM persons WHERE id = $1", params["id"])
-	PanicIf(err)
-	defer rows.Close()
-	person := person.Person{}
-
-	for rows.Next() {
-		err := rows.Scan(&person.Id, &person.Name, &person.Age, &person.Job, &person.Email)
-		PanicIf(err)
-	}
-
-	r.HTML(200, "persons/show", person)
+func showPerson(r render.Render, params martini.Params, db gorm.DB) {
+	p := person.Person{}
+	db.First(&p, params["id"])
+	r.HTML(200, "persons/show", p)
 }
 
 func main() {
