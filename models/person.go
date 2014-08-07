@@ -10,5 +10,4 @@ type Person struct {
 	Job       string
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	DeletedAt time.Time
 }

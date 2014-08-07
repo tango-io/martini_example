@@ -22,7 +22,13 @@ func NewPerson(r render.Render) {
 }
 
 func CreatePerson(r render.Render, req *http.Request, db gorm.DB) {
-	p := person.Person{}
+	age, _ := strconv.Atoi(req.FormValue("person[age]"))
+	p := person.Person{
+		Name:  req.FormValue("person[name]"),
+		Age:   age,
+		Email: req.FormValue("person[email]"),
+		Job:   req.FormValue("person[job]"),
+	}
 	db.Create(&p)
 	r.Redirect("/")
 }
@@ -36,11 +42,16 @@ func EditPerson(r render.Render, params martini.Params, db gorm.DB) {
 func UpdatePerson(r render.Render, req *http.Request, params martini.Params, db gorm.DB) {
 	p := person.Person{}
 	db.First(&p, params["id"])
-	p.Name = req.FormValue("person[name]")
-	p.Age, _ = strconv.Atoi(req.FormValue("person[age]"))
-	p.Email = req.FormValue("person[email]")
-	p.Job = req.FormValue("person[job]")
-	db.Save(&p)
+	age, _ := strconv.Atoi(req.FormValue("person[age]"))
+
+	db.Model(&p).Updates(
+		person.Person{
+			Name:  req.FormValue("person[name]"),
+			Age:   age,
+			Email: req.FormValue("person[email]"),
+			Job:   req.FormValue("person[job]"),
+		},
+	)
 	r.Redirect("/")
 }
 

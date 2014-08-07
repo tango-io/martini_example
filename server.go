@@ -12,6 +12,7 @@ import (
 
 func SetupDB() gorm.DB {
 	db, err := gorm.Open("postgres", "dbname=martini_example sslmode=disable")
+	db.LogMode(true)
 	PanicIf(err)
 	return db
 }
